@@ -313,11 +313,15 @@ y = ++x; // pre
         - Reuse instead of reinventing the wheel
 - Have only common items of derived class in base class
 
-![Delegation](./images/delegation.png)
+<p align="center">
+    <img src="./images/delegation.png" width=500>
+</p>
 
 ## Main Idea of Inheritance
 - Inheritance provides a mechanism to share interface
-![Main Idea of Inheritance](./images/main_idea_inheritance.png)
+<p align="center">
+    <img src="./images/main_idea_inheritance.png" width=500>
+</p>
 
 ```cpp
 double find_interest(Account* p) {
@@ -472,7 +476,10 @@ delete[] q; // delete[] operator
         - `new` and `new[]`
     - `new` may or may not use book keeping
 
-![Book_keeping](./images/book_keeping.png)
+<p align="center">
+    <img src="./images/book_keeping.png" width=500>
+</p>
+
 
 ## Scripting vs Non Scripting Languages
 - Compiler is present at runtime in scripting languages
@@ -516,12 +523,16 @@ struct A {
 struct A a; // can take 5 bytes or 8 bytes, this is undefined
 ```
 
-![struct_padding_1](./images/struct_padding_1.png)
+<p align="center">
+    <img src="./images/struct_padding_1.png" width=500>
+</p>
 - To fetch `a.n` would require 2 clock cycles
     - Need to fetch 2 words
     - One more operation to combine the two words
 
-![struct_padding_2](./images/struct_padding_2.png)
+<p align="center">
+    <img src="./images/struct_padding_2.png" width=500>
+</p>
 - Here padding comes in the picture
 - 3 bytes are wasted to speed up fetching of `a.n`
 - Speed-time trade off
