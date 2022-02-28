@@ -305,3 +305,22 @@ y = ++x; // pre
 - Have only common items of derived class in base class
 
 ![Delegation](./images/delegation.png)
+
+## Main Idea of Inheritance
+- Inheritance provides a mechanism to share interface
+![Main Idea of Inheritance](./images/main_idea_inheritance.png)
+
+```cpp
+double find_interest(Account* p) {
+    return p->interest();
+}
+
+SBA sba;
+Account a;
+find_interest(&sba);
+find_interest(&a);
+```
+    - At compile time, `p` points to base class
+    - At runtime, it can point to the class provided as a parameter while
+      calling the function
+
