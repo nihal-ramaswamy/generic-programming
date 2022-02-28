@@ -129,6 +129,10 @@
 
 ## C++
 - Main goal of C++ is efficiency
+- There are only 3 runtime features in C++
+    - Virtual functions dispatch
+    - Exception handling
+    - Runtime type indentification
 
 ### Program Structure
 - As in C
@@ -492,6 +496,15 @@ delete[] q; // delete[] operator
     5. User defined conversions
     6. Type unsafe conversions
 
+Example:
+```cpp
+int sum(int x, int y);
+```
+- Function decleration of prototype
+- Ony for compilers
+- Can be repeated
+- C++ function names are mangled or decorated
+
 ## Structure Padding
 
 ```cpp
@@ -512,3 +525,82 @@ struct A a; // can take 5 bytes or 8 bytes, this is undefined
 - Here padding comes in the picture
 - 3 bytes are wasted to speed up fetching of `a.n`
 - Speed-time trade off
+
+- Can use compiler directives to change the alignment
+- Make a struct for space or time efficiency
+- Logical layout of structure is never altered by the compiler
+
+## Matching arguments to parameters
+- Promotion
+    - `int` is the preferred integral type
+    - `double` is the preferred floating type
+    - Promotion is conversion of integral types to int and floating types to
+      double
+    - No loss of precision
+
+- Standard Conversion
+    - Conversion of numeric types to any other numeric type
+    - Could have loss of precision
+    - Does not apply on pointers
+
+## Overloading
+- More than one function with the same name
+- Function names stand for the same abstraction
+- Interface will not be the same
+- Compile time mechanism
+- Function names are mangled by the compiler to support overloading
+- Names are unique for the linker
+- Overloading is based on matching of arguments to parameters
+- There should be some difference in the overloaded function
+    - Number of parameters, type of parameters should differ
+    - Return type is not included in differentiating overloaded functions
+- Function resolution is based only on arguments and parameter matching
+- Name mangling is not standardized
+    - Compiler dependent
+    - Compiler may mangle the names differently each time it is compiled
+    - to follow linkage convention in C, use `extern "C"`
+
+## Generic Programming
+- Instantiation
+    - Create function based on the call
+        - Implicit Instantiation
+            - Compiler deduces the type of parameters based on the matching of
+              arguments
+        - Explicit Instantiation
+            - Specify the type in the call
+    - Compile time mechanism
+    - Results in overloaded functions
+- If algorithms are different
+    - use overloading
+- If algorithms are same
+    - use templates
+- If algorithms are different but abstraction is the same
+    - use templates
+
+```cpp
+template <class T>
+T square(T x) {
+    return x * x;
+}
+
+square(5);
+square(2.5); // double
+square(2); // No new instantiation, helps not to bloat the code
+square(2.5f); // New instantiation, type here is float
+```
+
+```cpp
+template <class T>
+bool equal(T x, T y) { // Here x and y should be of the same type
+    return x == y;
+}
+
+equal(65, 'A');
+// ambiguity error, conflicting types
+
+equal<int>(65, 'A');
+// Specifying a list of types to match the list of type names in the template
+definition
+```
+
+
