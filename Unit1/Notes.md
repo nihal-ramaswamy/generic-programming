@@ -610,8 +610,168 @@ equal(65, 'A');
 // ambiguity error, conflicting types
 
 equal<int>(65, 'A');
-// Specifying a list of types to match the list of type names in the template
-definition
+// Specifying a list of types to match the list of type names in the template definition
 ```
 
+### Specialisation
+
+```cpp
+template <class T>
+bool equal(T x, T y) {
+    return x == y;
+}
+
+template <> // specialisation
+bool equal(char* a, char* b) {
+    return (strcmp(a, b) == 0);
+}
+```
+
+## Defailt Parameter in Function
+- Default value is always part of decleration of function
+- Use it only when we have a resonable default value
+- Right most parameters can be default
+    - Left most arguments to be specified in call
+- Default parameters can be any expression
+    - But it must be evaluated every time the function is called
+
+## Overloading Functions cont.
+
+```cpp
+void foo(int x) {
+    cout << "Foo\n";
+}
+
+void foo(const int x) {
+    cout << "Const foo\n";
+}
+```
+- Above code is an error
+    - From caller's perspective, `int` and `const int` are the same, hence it looks like redefinition
+
+
+```cpp
+void foo(int& x) {
+    cout << "Foo\n";
+}
+
+void foo(const int& x) {
+    cout << "Const foo\n";
+}
+```
+
+- Above code is not an error
+    - From caller's perspective, `int&` and `const int&` are different
+        - `int&`: caller's argument can change
+        - `const int&`: caller's argument cannot change
+
+## Parameter Passing Mechanisms
+- By value
+- Reference to value
+- Reference to const
+
+- Variable of simple type:
+    - Want to change: pass by reference to value
+    - Do no want to change: pass by value
+- Variable of structured type"
+    - Want to change: pass by reference to value
+    - Do not want to change: pass by reference to const
+
+- We *usually* do not pass structured type by value if we do not want to change the object because
+    1. Takes more space
+    2. Takes more time
+    3. If pointers, more problems
+        - Alias
+        - Dangling
+        - Garbage
+
+## Function Call Mechanism
+1. Function Name:
+    - Mangled by the compiler
+2. Order of evaluation of arguments to a function
+    - Not defined in language
+    - `foo(a, b, c, d)`: order undefined
+    - `foo(a++, b, a, a++)`: do not know what will happen
+3. When are arguments evaluated
+    - All arguments are evaluated completely before the call
+    - Arguments copied to corresponding parameters
+    - Call by value: initialization and not assignment
+4. Order of stacking
+    - Normal ways of stacking
+        - Left to Right: Pascal or standard convention
+        - Right to Left: C convention
+    - Order of pushing is required and defined before hand
+    - C supports right to left to support variable number of arguments efficiently
+5. Cleaning the stack
+    - Involved changing the stack pointer to revert back to original state
+    - Who cleans the stack
+        - Callee cannot make out the size of the activation record when tehre are variable number of arguments
+        - Prefer Callee: But this is possible only if size of activation record is known
+        - Caller can always clean the stack
+
+## Evaluation of an Expression
+1. Evaluation of operands
+    - Fetching operands to the register of the CPU not defined
+2. Evaluation of operators
+    - Based on precedence and assosciation
+
+```cpp
+int a = 10;
+int b = a * a++; // b = 10 * 10 or 11 * 10, not defined
+
+int i = 2;
+a[i] = i++; // a[2] = 2 or a[3] = 2, not defined
+```
+
+## Returning a Reference
+- Return values are always through temporaries
+
+```cpp
+int f1(int x) {
+    return x;
+}
+
+int a = 10;
+int b;
+b = f1(a);
+```
+
+<p align="center">
+    <img src="./images/return_reference_1.png" width=500>
+</p>
+
+
+```cpp
+int& f1(int& x) {
+    return x;
+}
+
+int a = 10;
+int b;
+b = f1(a);
+```
+
+<p align="center">
+    <img src="./images/return_reference_2.png" width=500>
+</p>
+<br>
+
+- As good as saying `b = a`
+- `b` will not be a reference
+- f1(a) is essentially reference to `a`. Hence `f1(a) = 20` => `a = 20`
+
+
+
+```cpp
+int& f1(int x) {
+    return x;
+}
+
+int a = 10;
+int b;
+b = f1(a);
+```
+- This results in the return temporary to be dangling
+    - Hence while dereferencing, problems will occur
+- If we return a reference, it should refer to something that exists in the calling environment
 
