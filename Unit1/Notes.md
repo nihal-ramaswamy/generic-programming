@@ -320,7 +320,6 @@ Account a;
 find_interest(&sba);
 find_interest(&a);
 ```
-    - At compile time, `p` points to base class
-    - At runtime, it can point to the class provided as a parameter while
-      calling the function
+- At compile time, `p` points to base class
+- At runtime, it can point to the class provided as a parameter while calling the function
 
