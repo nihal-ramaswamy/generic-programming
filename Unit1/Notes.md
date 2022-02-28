@@ -118,9 +118,14 @@
         - Overring function to suit the derived class
 - Inheritance is a relationship between classes
 
-### Other programming paradigms
-- Object based
-- Generic
+### Object Based
+- Supports only
+    - Abstraction
+    - Encapsulation
+    - Composition
+
+### Generic Programming
+- Avoid reinventing algorithms and data structures
 
 ## C++
 - Main goal of C++ is efficiency
@@ -323,3 +328,187 @@ find_interest(&a);
 - At compile time, `p` points to base class
 - At runtime, it can point to the class provided as a parameter while calling the function
 
+### Inheritance in Python
+- Python shares interface in two ways
+    - Inheritance
+    - Duck Typing
+        - Works only on runtime types
+- Duck typing
+    - If something walks like a duck, quacks like a duck, it is a duck
+    - Any object can be used as long as the interface is the same
+
+```python3
+class A:
+    def foo(self):
+        print("Foo of A")
+class B:
+    def foo(self):
+        print("Foo of B")
+def caller(X):
+    X.foo()
+
+a = A()
+b = B()
+
+caller(a)
+caller(b) # this will not work in C++
+```
+
+## More C++
+- Attributes of variables
+    - name
+    - location
+    - value
+    - type
+    - storage class
+    - qualifier
+
+- Decleration
+    - Only for global variables (extern)
+    - For compilers
+
+- Definition
+    - Causes memory allocation
+    - Where and when it happens depends on storage class
+    - C++ follows one definition rule
+
+- Initialization
+    - Happens at the point of definition
+    - Happens only once
+    - Not an expression
+    - More efficient than assignment
+    - Define a variable only when we know how to initialize it
+    - Default Initialization
+        - global, static variables are initialized to 0
+        - others are not initialized
+
+- Assignment
+    - An expression
+    - Low precedence
+    - Right to left
+
+```cpp
+int a = 10; // Not preferred
+int b{10}; // Type needs to match, does not perform narrowing
+int c(10);
+```
+
+- `int a = 10;`
+    - Has lexical ambiguity
+    - Same symbol used for initialization and assignment
+
+- Pointers
+    - Types
+        - Alias
+        - Dangling
+        - Garbage (leads to memory leak)
+    - May be initialized
+    - Should be explicitly dereferenced
+    - Pointers can be changed
+    - Pointers can be grounded (`nullptr`)
+
+- Reference
+    - Has to be initialized
+    - Dereferenced implictly
+    - Sort of an alias that it is being initialized to
+    - Can never be changed to reference another variable
+    - Can never be null
+    - Can reference to a pointer
+    - Cannot have a pointer to a reference
+        - Reference to reference will collapse
+
+```cpp
+int *p;
+p = (int*)malloc(sizeof int);
+free(p);
+
+int *q;
+q = (int*)malloc(sizeof int * 4);
+free(q);
+```
+- `free(p)` cannot change value of `p`
+    - parameter passing in `free` is only pass by value
+    - this is because parameter passing in C is only pass by value
+- `p` will be dangling
+
+- When it comes to `q`
+    - Do not need to specify how many bytes to remove
+    - Uses `book keeping` or `house keeping` to store about bytes used
+    - malloc always gives contiguous blocks
+    - `free(q+1)` is undefined
+- malloc can fail, good to always check return value of malloc
+
+### New and Delete Operator
+- new operator
+    - calls operator new to allocate memory
+    - initializes
+        - calls constructor
+- delete operator
+    - calls operator delete to deallocate memory
+    - de-initializes
+        - calls destructor
+
+```cpp
+int *p;
+p = new int(10);
+delete p;
+
+int *q;
+q = new int[4]; // new[] operator
+delete[] q; // delete[] operator
+```
+
+## Book Keeping
+- One extra byte to store information about memory allocated
+- When it is storing an array (Example in image: `q`), it is fine (it makes it
+  efficient)
+- When it is storing a single integer (Example in image: `p`), Booking keeping
+  may be optimized
+    - In C++, there are 2 `new` operators
+        - `new` and `new[]`
+    - `new` may or may not use book keeping
+
+![Book_keeping](./images/book_keeping.png)
+
+## Scripting vs Non Scripting Languages
+- Compiler is present at runtime in scripting languages
+- Compiler is not present at runtime in non scripting languages
+
+## Prototype
+- A function prototype is a declaration of the function that tells the program about the type of the value returned by the function and the number and type of arguments.
+- Uses
+    - Matching argument to parameters in terms of number of parameters, type
+      and order of parameters
+        - number of parameters should match
+        - corresponding type may or may not exactly match
+    - Overloading
+    - Default parameters
+
+- Matching arguments to parameters
+    1. Exact match or trivial conversion
+    2. Generic functions
+    3. Promotion
+    4. Standard conversion
+    5. User defined conversions
+    6. Type unsafe conversions
+
+## Structure Padding
+
+```cpp
+struct A {
+    char c; // 1 byte
+    int n; // 1 word (example: 4 bytes)
+};
+
+struct A a; // can take 5 bytes or 8 bytes, this is undefined
+```
+
+![struct_padding_1](./images/struct_padding_1.png)
+- To fetch `a.n` would require 2 clock cycles
+    - Need to fetch 2 words
+    - One more operation to combine the two words
+
+![struct_padding_2](./images/struct_padding_2.png)
+- Here padding comes in the picture
+- 3 bytes are wasted to speed up fetching of `a.n`
+- Speed-time trade off
