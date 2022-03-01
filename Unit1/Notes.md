@@ -775,3 +775,127 @@ b = f1(a);
     - Hence while dereferencing, problems will occur
 - If we return a reference, it should refer to something that exists in the calling environment
 
+
+## Conversion between Const and Variable
+- Conversion of variable to const: Trivial
+- Conversion of const to variable: Requires explicit casting
+
+## Pointer Arthmetic
+
+```cpp
+int a[] = {1, 2, 3, 4, 5};
+int *p(a + 5); // p is 'one past the end' of 'a', p is dangling
+```
+
+- pointer ± int = pointer
+- pointer - pointer = int
+    - pointer - pointer = (difference of address/size of element the point to)
+    - Number of elements between the pointers
+
+
+### Dangling Pointer
+- Not dangerous
+- Valid pointer
+- Dereferencing a dangling pointer is undefined
+    - May or may not crash the program if you try to dereference it
+
+### Virtual Addressing (can ignore)
+- Programs will not be limited by physical memory
+- Supports relocation
+- Programs when running, is basically running on a virtual address space
+    - Partitions of virtual address space
+        - One partition is taken by OS (Called U-area)
+        - text segment - taken by program
+        - data segment
+            - taken by global and static variables and string constants
+        - stack
+        - heap
+- Unit of memory transfer between OS and process is page
+    - Page is given to program
+
+
+<p align="center">
+    <img src="./images/virtual_address.png" width=500>
+</p>
+
+### Different ways of passing an array as an argument
+- Array and its size
+- Array with a sentinel
+- Pointer to first and last element
+- Pointer to first element and pointer to one past the end
+
+### Comparing two pointers
+- `pointer1 <= pointer2`: Do not do this
+- `pointer1 < pointer2`: Okay
+- `pointer1 != pointer2`: This is preferred
+
+### Incrementing a pointer
+- `pointer = pointer + 1`: Do not do this
+- `++pointer`: Do this
+
+### Templating Pointers
+```cpp
+template <class T>
+T* search(T* first, T* last, T key) {
+    while (first != last && *first != key) {
+        ++first;
+    }
+    return first;
+}
+```
+- For the above code to work, type `T` should support `equality` (or in this case, inequality)
+- We dont want any specific direct relationship between target and pointer here
+    - Hence modified code is as follows
+
+```cpp
+template <class ptr_t, class T>
+ptr_t search(pte first, ptr last, T key) {
+    while (first != last && *first != key) {
+        ++first;
+    }
+    return first;
+}
+```
+
+### Different syntaxes and their semantics
+```cpp
+int a; // a is an integer
+
+int *b; // b is of type int* and has garbage value
+
+int **c; // c is a pointer to a pointer
+
+int d[10]; // array of integers of size 10
+
+b = d; // possible, array at runtime is a pointer
+
+int e[5][6];
+// conceptually, e is a 2D array
+// e degenerates(high five) to a pointer
+// e is a pointer to a row of 6 elements
+
+int (*f)[6];
+f = e;
+// f pointers to the 0th row of e
+// if you increment f, it goes to the next row of e
+
+int f1(int, int); // f1 is a function
+int* f2(int, int); // f2 is also a function
+
+int (*f3)(int, int); // f3 is a variable function name that takes 2 integers and returns an int
+
+int (*f4[4])(int, int); // array of 4 pointers to function
+```
+
+Assume you have an array:
+`int a[5]`
+- `a` = pointer to an int
+- `&a` = pointer to an array
+- `&(a+1)` = error because `(a+1)` is a temporary
+- ++a = error because `a` is a constant
+- `int *p = a + 1;`
+    - Here `&p` becomes a pointer to a pointer
+
+<p align="center">
+    <img src="./images/pointers_to_array.png" width=500>
+</p>
