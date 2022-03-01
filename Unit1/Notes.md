@@ -899,3 +899,95 @@ Assume you have an array:
 <p align="center">
     <img src="./images/pointers_to_array.png" width=500>
 </p>
+
+### When pointers want to confuse you (not really, i cant think of a better title)
+
+<p align="center">
+    <img src="./images/when_pointers_want_to_confuse_you.png" width=500>
+</p>
+
+### Passing 2D arrays:
+- No can dosville baby doll
+    - `void foo(int a[][]);`
+        - Do not know the size of row
+    - `void foo(int** a);`
+        - 2D array is not a pointer to a pointer
+    - `void foo(int a[5][]);`
+        - Do not know size of row
+        - C is row major
+        - Fortran is column major
+- Can dosville baby doll
+    - `void foo(int a[][4]);`
+    - `void foo(int (*a)[4]);`
+- To pass a 2D array of variable size
+    - `void bar(int n, int a[][n]);`
+    - In C99
+        - `void bar(int n; int a[][n], int n);
+        - Called forward decleration
+
+### Pointer to a Function
+```cpp
+int add(int x, int y) { return x + y; }
+
+int (*ptr_fn)(int, int); // defining pointer to a function with return type int and has two parameters of type int
+
+ptr_fn = add;
+cout << (*ptr_fn)(2, 3);
+
+ptr_fn = &add;
+cout << (*ptr_fn)(4, 5);
+
+cout << ptr_fn(6, 7);
+```
+#### Callbacks
+```cpp
+int caller(int (*fn)(int, int), int x, int y) {
+    return fn(x, y); // callback
+}
+```
+
+### Typedef with Pointers
+- typedef is a way to achieve concept of interface
+
+```cpp
+typedef int t;
+t b; // b is an int
+
+typedef int* t1; // t1 = type; pointer to int
+t1 x, y; // x and y are a pointer to int
+
+#define t2 int*
+t2 c, d; // c is a pointer to int, d is int
+
+typedef int (*ptr_fn_t)(int, int);
+ptr_fn_t fn;
+fn = add; // refer to add function from above
+cout << fn(3, 4);
+```
+
+### Making template functions to use Callbacks
+- Non template function
+```cpp
+int* search(int* first, int* last, bool (*fn)(int) {
+    while (first != last && !fn(*first)) {
+        ++first;
+    }
+    return first;
+}
+```
+
+- Template function
+```cpp
+template <class T, class fn_t>
+T search(T first, T last, fn_t func) {
+    // remaining code is same from above
+}
+```
+- Compiler can deduce the type of fn_t
+    - This is because each function has a type
+
+## Overloading Templates
+- Templates can be overloaded if
+    - Number of arguments differ
+    - Number of parameters differ
+
