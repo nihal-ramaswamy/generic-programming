@@ -1,4 +1,6 @@
 file = $(target)
+single:
+	g++ $(file).cpp
 a.out: server.o client.o
 	g++ $(file).o $(file)_client.o
 server.o: $(file).h $(file).cpp
